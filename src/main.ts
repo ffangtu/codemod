@@ -1,21 +1,18 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const path = require('path');//解析需要遍历的文件夹
-const babel = require("@babel/core");
-const traverse =  require("@babel/traverse").default;
 const filePath = path.resolve(__dirname,'./testdir');
-const {parse} = require('@babel/parser')
-const t = require('@babel/types')
-const generator = require('@babel/generator').default
+const j = require('jscodeshift');
 
-
-
-const visitor = {
-    ImportDeclaration(path) { 
-        console.log( path.node.source)
-        path.node.source.value = '23232'
-        console.log( path.node.source)
-      }
-}
+// 升级对照表
+const updateMap = Object.entries(
+    {
+        "pmserver": "@pms/pmserver",
+        "react-current-user": "@pms/react-current-user",
+        "react-pm-utils": "@pms/react-utils"
+    }
+)
 
 //调用文件遍历方法
 fileDisplay(filePath);
@@ -39,19 +36,31 @@ function fileDisplay(filePath){
                         const isFile = stats.isFile();//是文件
                         const isDir = stats.isDirectory();//是文件夹
                         if(isFile){
-                              babel.transformFileAsync(filedir, {
-                                filename, ast: true, code: false,
-                                plugins: [{
-                                    visitor
-                                }]
-                              }).then(result => {
-                                console.log(result.code);
-                                // let newContent = JSON.stringify(newList, null, 4);
-                               /*  fs.writeFile(filedir, result.code, 'utf8', (err) => {
+                            console.log(666666666666)
+                            fs.readFile(filedir, 'utf-8', (err, data)=>{
+                                let needChange = false
+                                // console.log(data)
+                                const newContent = j(data)
+                                .find(j.ImportDeclaration)
+                                .forEach(path => {
+                                    updateMap.some(item=>{
+                                        if(path.value.source.value.indexOf(item[0]) === 0) {
+                                            path.value.source.value = item[1];
+                                            needChange = true;
+                                            return true;
+                                        }
+                                        return false;
+                                    })
+                                })
+                                .toSource();
+
+                                console.log(err, 2222222)
+
+                                needChange && fs.writeFile(filedir, newContent, 'utf8', (err) => {
                                     if (err) throw err;
                                     console.log('success done');
-                                }); */
-                              });;      
+                                });
+                            })
                         }
                         if(isDir){
                             fileDisplay(filedir);//递归，如果是文件夹，就继续遍历该文件夹下面的文件
