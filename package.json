@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.13.5",
+    "@types/jscodeshift": "^0.11.0",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-clear": "^2.0.7",
     "rollup-plugin-commonjs": "^10.1.0",

@@ -1,9 +1,10 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --parser=babel|babylon|flow|ts|tsx
 
 const fs = require('fs');
 const path = require('path');//解析需要遍历的文件夹
 const filePath = path.resolve(__dirname,'./testdir');
 const j = require('jscodeshift');
+const babelParse = require("@babel/parser");
 
 // 升级对照表
 const updateMap = Object.entries(
@@ -39,6 +40,16 @@ function fileDisplay(filePath){
                             console.log(666666666666)
                             fs.readFile(filedir, 'utf-8', (err, data)=>{
                                 let needChange = false
+                             /*    const content = babelParse.parse(data,{
+                                    sourceType: "module",
+                                    plugins: [
+                                        // enable jsx and flow syntax
+                                        "js",
+                                        "jsx",
+                                        "flow"
+                                      ]
+                                })
+                                console.log(content) */
                                 // console.log(data)
                                 const newContent = j(data)
                                 .find(j.ImportDeclaration)
@@ -53,9 +64,6 @@ function fileDisplay(filePath){
                                     })
                                 })
                                 .toSource();
-
-                                console.log(err, 2222222)
-
                                 needChange && fs.writeFile(filedir, newContent, 'utf8', (err) => {
                                     if (err) throw err;
                                     console.log('success done');

@@ -14,7 +14,7 @@
       // 是否编辑js文件
       "strict": true,
       // 严格模式
-      "noUnusedLocals": true,
+      "noUnusedLocals": false,
       // 未使用变量报错
       "experimentalDecorators": true,
       // 启动装饰器
