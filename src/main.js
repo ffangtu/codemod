@@ -9,7 +9,7 @@ const j = require('./jscodeshift');
 const updateMap = Object.entries(
     {
         "pmserver": "@pms/pmserver",
-        "react-current-user": "@pms/react-current-user",
+        "current-user": "@pms/react-current-user",
         "react-pm-utils": "@pms/react-utils"
     }
 )
